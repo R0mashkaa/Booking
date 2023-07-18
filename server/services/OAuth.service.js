@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { BadRequest, Unauthorized, ServerError } = require('../errors/Apierror');
 const { ACCESS_TOKEH_SECRET, REFRESH_TOKEH_SECRET } = require ('../configs/variables');
-const { FORGOT_PASSWORD, CONFIRM_ACCOUNT } = require('../configs/actionTokenTypes.enum');
+const { FORGOT_PASSWORD, CONFIRM_ACCOUNT, DELETE_ACCOUNT} = require('../configs/actionTokenTypes.enum');
 
 const hashPassword = (userPassword) => bcrypt.hash(userPassword, 10);
 
@@ -39,6 +39,11 @@ const generateActionToken = (actionType, encodeData = {}) => {
         expiresIn = '72h',
         secretWord = 'Confirm account';
         break;
+    
+    case DELETE_ACCOUNT:
+        expiresIn = '24h',
+        secretWord = 'Delete account';
+        break;
 
     default:
         throw new ServerError('Wrong actionToken type');
@@ -61,11 +66,14 @@ const validateToken = (tokenType = '', tokenData = '') => {
         case 'Forgot password':
             tokenType = FORGOT_PASSWORD;
             break;
-            
         
         case 'Confirm account':
             tokenType = CONFIRM_ACCOUNT;
             break;
+            
+        case 'Delete account':
+            tokenType = DELETE_ACCOUNT;
+            break; 
             
         default:
             throw new BadRequest('Wrong token type');

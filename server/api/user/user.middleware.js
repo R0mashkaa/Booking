@@ -1,7 +1,7 @@
 const userService = require('./user.service');
 const User = require('../../dataBase/User');
 const { joiValidatorSchema } = require('./user.validator');
-const { NotFound, BadRequest, Conflict } = require('../../errors/ApiError');
+const { NotFound, BadRequest, Conflict } = require('../../errors/Apierror');
 
 
 

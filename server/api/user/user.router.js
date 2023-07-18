@@ -1,16 +1,30 @@
 const userRouter = require('express').Router();
 
-const controller = require('./user.controller');
+const userController = require('./user.controller');
 const userMdlwr = require('./user.middleware');
+const authController = require('../authorization/auth.controller');
+const authMdlwr = require('../authorization/auth.middleware');
 
+const { FORGOT_PASSWORD, CONFIRM_ACCOUNT, DELETE_ACCOUNT } = require ('../../configs/actionTokenTypes.enum');
 
-userRouter.get('/', controller.getAllUsers);
-userRouter.post('/', userMdlwr.createValidator, userMdlwr.isEmailAndLoginExsist, controller.createUser);
+userRouter.get('/', userController.getAllUsers);
+userRouter.post('/', userMdlwr.createValidator, userMdlwr.isEmailAndLoginExsist, userController.createUser);
 
-userRouter.use('/:userId', userMdlwr.getUserDynamically('userId','params','_id'));
-userRouter.get('/:userId', controller.getUserById);
-userRouter.put('/:userId',  userMdlwr.createValidator, userMdlwr.isEmailAndLoginExsist, controller.updateUser);
-userRouter.delete('/:userId', controller.deleteUser);
+userRouter.get('/:userId', userMdlwr.getUserDynamically('userId','params','_id'), userController.getUserById);
+userRouter.put('/:userId',  userMdlwr.getUserDynamically('userId','params','_id'), userMdlwr.createValidator, userMdlwr.isEmailAndLoginExsist, userController.updateUser);
+userRouter.delete('/:userId', userMdlwr.getUserDynamically('userId','params','_id'),  userController.deleteUser);
+
+userRouter.get('/Profile', authMdlwr.validateTokenDynamically('accessToken'), userController.getMyProfile);
+
+userRouter.post('/confirmation', userMdlwr.getUserDynamically('email','body'), authController.sendConfirmAccount);
+userRouter.patch('/confirmation', authMdlwr.validateActionToken(CONFIRM_ACCOUNT), authController.setConfirmAccount);
+
+userRouter.post('/password/forgot', userMdlwr.getUserDynamically('email','body'), authController.sendForgotPasswordEmail);
+userRouter.patch('/password/forgot', authMdlwr.validateActionToken(FORGOT_PASSWORD), authController.setForgotPassword);
+
+userRouter.post('/deleteAccount', userMdlwr.getUserDynamically('email','body'), authController.sendDeleteAccount);
+userRouter.patch('/deleteAccount', authMdlwr.validateActionToken(DELETE_ACCOUNT), authController.setDeleteAccount);
+
 
 
 module.exports = userRouter;

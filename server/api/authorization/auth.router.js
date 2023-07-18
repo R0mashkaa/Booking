@@ -1,13 +1,15 @@
 const authRouter = require('express').Router();
 
-const controller = require('./auth.controller');
+const authController = require('./auth.controller');
 const authMdlwr = require('./auth.middleware');
 const userMdlwr = require('../user/user.middleware');
 
 
-authRouter.post('/', userMdlwr.getUserDynamically('email', 'body'), controller.userLogin);
-authRouter.post('/logout', authMdlwr.validateTokenDynamically('accessToken'), controller.userLogoutSingleDevice);
-authRouter.post('/logoutAll', authMdlwr.validateTokenDynamically('accessToken'), controller.userLogoutAllDevice);
+authRouter.post('/', userMdlwr.getUserDynamically('email', 'body'), authController.userLogin);
+authRouter.post('/logout', authMdlwr.validateTokenDynamically('accessToken'), authController.userLogoutSingleDevice);
+authRouter.post('/logoutAll', authMdlwr.validateTokenDynamically('accessToken'), authController.userLogoutAllDevice);
+
+authRouter.post('/refresh', userMdlwr.getUserDynamically('email', 'body'), authMdlwr.validateTokenDynamically('refreshToken'), authController.refreshToken);
 
 
 module.exports = authRouter;

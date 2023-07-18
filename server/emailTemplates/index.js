@@ -1,4 +1,4 @@
-const { WELCOME, BANNED, FORGOT_PASSWORD } = require ('../configs/emailTypes.enum');
+const { WELCOME, FORGOT_PASSWORD, BANNED, DELETE_ACCOUNT } = require ('../configs/emailTypes.enum');
 
 module.exports = {
     [WELCOME]: {
@@ -14,5 +14,10 @@ module.exports = {
     [BANNED]: {
         templateName: 'Banned',
         subject: 'Your account was banned'
+    },
+
+    [DELETE_ACCOUNT]: {
+        templateName: 'DeleteAccount',
+        subject: 'Account deletion confirmation'
     }
 };
