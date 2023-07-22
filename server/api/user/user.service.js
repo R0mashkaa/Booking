@@ -26,5 +26,5 @@ module.exports = {
     deleteUser: async (userId) => {
         return  User.findByIdAndRemove(userId);
     },
-
+    
 };

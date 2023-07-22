@@ -112,7 +112,7 @@ module.exports = {
 
         const confirmAccountURL = `${FRONTEND_URL}/account/confirmation?${confirmAccountToken}`;
 
-        await emailService.sendMail(user.email, WELCOME, { confirmAccountURL, name: user.loginName });
+        await emailService.sendMail(user.email, WELCOME, { confirmAccountURL, name: user.fullName });
     },
 
     setConfirmAccount: async (req, res, next) => {
@@ -165,16 +165,15 @@ module.exports = {
     refreshToken: async (req, res, next) => {
         try {
             const user = req.user;
+
             const refreshToken = req.get('Authorization');
 
-            await userService.deleteOneByParams({ refreshToken });
-            const updatedTokenPair = OAuthService.generateAccessTokenPair({ ...user });
+            await authService.deleteOneByParams({ refreshToken });
 
-            await userService.createOauthPair({ ...updatedTokenPair, user: user._id });
-            res.json({ 
-                ...updatedTokenPair,
-                user 
-            });
+            const tokenPair = OAuthService.generateAccessTokenPair({ ...user.id });
+
+            await authService.createOauthPair({ ...tokenPair, user: user._id });
+            res.json({ ...tokenPair, user });
         } catch (e) {
             next(e);
         }

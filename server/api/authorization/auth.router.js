@@ -9,7 +9,7 @@ authRouter.post('/', userMdlwr.getUserDynamically('email', 'body'), authControll
 authRouter.post('/logout', authMdlwr.validateTokenDynamically('accessToken'), authController.userLogoutSingleDevice);
 authRouter.post('/logoutAll', authMdlwr.validateTokenDynamically('accessToken'), authController.userLogoutAllDevice);
 
-authRouter.post('/refresh', userMdlwr.getUserDynamically('email', 'body'), authMdlwr.validateTokenDynamically('refreshToken'), authController.refreshToken);
+authRouter.post('/refresh', authMdlwr.validateTokenDynamically('refreshToken'),  authController.refreshToken);
 
 
 module.exports = authRouter;
