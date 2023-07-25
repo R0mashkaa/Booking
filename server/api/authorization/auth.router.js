@@ -12,4 +12,5 @@ authRouter.post('/logoutAll', authMdlwr.validateTokenDynamically('accessToken'),
 authRouter.post('/refresh', authMdlwr.validateTokenDynamically('refreshToken'),  authController.refreshToken);
 
 
+
 module.exports = authRouter;

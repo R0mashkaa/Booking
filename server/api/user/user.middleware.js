@@ -3,8 +3,6 @@ const User = require('../../dataBase/User');
 const { joiValidatorSchema } = require('./user.validator');
 const { NotFound, BadRequest, Conflict } = require('../../errors/Apierror');
 
-
-
 module.exports = {
     getUserDynamically: (paramName, from, dbField = paramName) => async (req, res, next) => {
         try {
@@ -39,15 +37,15 @@ module.exports = {
 	
     isEmailAndLoginExsist:  async (req, res, next) => {
         try {
-            const loginName = req.body?.loginName;
+            const fullName = req.body?.fullName;
             const email = req.body?.email;
 
             if(await User.findOne({email})){
                 throw new Conflict('This email used, try another one');
             }
 
-            if(await User.findOne({loginName})){
-                throw new Conflict('This login used, try another one');
+            if(await User.findOne({fullName})){
+                throw new Conflict('This fullName used, try another one');
             }
 
             next();

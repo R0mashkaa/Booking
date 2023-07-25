@@ -161,7 +161,6 @@ module.exports = {
         }
     },
 
-
     refreshToken: async (req, res, next) => {
         try {
             const user = req.user;

@@ -18,11 +18,11 @@ userRouter.patch('/password/forgot', authMdlwr.validateActionToken(FORGOT_PASSWO
 userRouter.use('/', authMdlwr.validateTokenDynamically('accessToken'));
 userRouter.get('/', userController.getAllUsers);
 
+userRouter.get('/Profile', userController.getMyProfile);
+
 userRouter.get('/:userId', userMdlwr.getUserDynamically('userId','params','_id'), userController.getUserById);
 userRouter.put('/:userId',  userMdlwr.getUserDynamically('userId','params','_id'), userMdlwr.createValidator, userMdlwr.isEmailAndLoginExsist, userController.updateUser);
 userRouter.delete('/:userId', userMdlwr.getUserDynamically('userId','params','_id'),  userController.deleteUser);
-
-userRouter.get('/Profile', userController.getMyProfile);
 
 userRouter.post('/deleteAccount', userMdlwr.getUserDynamically('email','body'), authController.sendDeleteAccount);
 userRouter.patch('/deleteAccount', authMdlwr.validateActionToken(DELETE_ACCOUNT), authController.setDeleteAccount);

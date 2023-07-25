@@ -5,8 +5,8 @@ const AdvertScheme = new mongoose.Schema({
     region: { type: String, trim: true, required: true },
     city: { type: String, trim: true, required: true },
     pricePerDay: { type: Number, trim: true, required: true },
-    reserved: { type: Boolean, default: true },
-    owner: { type: mongoose.Schema.Types.Number, trim: true, ref: 'User', required: true },
+    reserved: { type: Boolean, default: false },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
 },
 {
     timestamps: true,

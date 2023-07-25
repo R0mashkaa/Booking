@@ -1,7 +1,6 @@
 const OAuth = require('../../database/OAuth');
 const ActionToken = require('../../database/actionToken');
 
-
 module.exports = {
     createOauthPair: (tokenData) => {
         return OAuth.create(tokenData);
@@ -11,6 +10,10 @@ module.exports = {
         return OAuth.findOne(searchData).populate('user');
     },
 	
+    getByAccessToken: async (accessToken = {}) => {
+        return await OAuth.findOne(accessToken);
+    },
+
     deleteOneByParams(deleteData = {}) {
         return OAuth.deleteOne(deleteData);
     },
