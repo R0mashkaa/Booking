@@ -4,8 +4,11 @@ const { OAuthService, emailService } = require('../../services');
 const { NO_CONTENT } = require('../../errors/error.codes');
 const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
 const { FRONTEND_URL } = require('../../configs/variables');
-const { FORGOT_PASSWORD, WELCOME, DELETE_ACCOUNT } = require('../../configs/emailTypes.enum');
-const { FORGOT_PASSWORD: forgotPasswordAction, CONFIRM_ACCOUNT: сonfirmAccountAction, DELETE_ACCOUNT: deleteAccountAction } = require('../../configs/actionTokenTypes.enum');
+const { FORGOT_PASSWORD, WELCOME, DELETE_ACCOUNT, BOOKING_OWNER, BOOKING_USER } = require('../../configs/emailTypes.enum');
+const { FORGOT_PASSWORD: forgotPasswordAction,
+    CONFIRM_ACCOUNT: сonfirmAccountAction,
+    DELETE_ACCOUNT: deleteAccountAction,
+    BOOKING_ADVERT: bookingAdvertAction } = require('../../configs/actionTokenTypes.enum');
 
 module.exports = {
     userLogin: async (req, res, next) => {
@@ -97,8 +100,6 @@ module.exports = {
             throw new Conflict('You account is confirmed');
         }
 
-        console.log(user.email);
-
         const confirmAccountToken = OAuthService.generateActionToken(
             сonfirmAccountAction,
             { email: user.email }
@@ -159,6 +160,37 @@ module.exports = {
         } catch (e) {
             next(e);
         }
+    },
+
+    sendBookingAdvertisment: async (userId, ownerId, advert) => {
+        const userObject = await userService.getSingleUser(userId);
+        const ownerObject = await userService.getSingleUser(ownerId);
+
+        console.log(advert);
+
+        const BookingAdvertismentToken = OAuthService.generateActionToken(
+            bookingAdvertAction,
+            { email: userObject.email }
+        );
+            
+        authService.createActionToken({
+            actionType: bookingAdvertAction,
+            tokenData: BookingAdvertismentToken,
+            user: userObject._id
+        });
+
+        await emailService.sendMail(ownerObject.email, BOOKING_OWNER, {
+            ownerName: ownerObject.fullName,
+            userName: userObject.fullName,
+            advertName: advert.advertName
+        });
+        await emailService.sendMail(userObject.email, BOOKING_USER, {
+            userName: userObject.fullName,
+            advertName: advert.advertName,
+            region: advert.region,
+            city: advert.city,
+            pricePerDay: advert.pricePerDay
+        });
     },
 
     refreshToken: async (req, res, next) => {

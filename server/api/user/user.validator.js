@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const {EMAIL_REGEXP, PASSWORD_REGEXP, FULLNAME_REGEXP} = require('../../configs/regexp.enum');
+const { EMAIL_REGEXP, PASSWORD_REGEXP, FULLNAME_REGEXP } = require('../../configs/regexp.enum');
 
 const joiValidatorSchema = Joi.object({
 

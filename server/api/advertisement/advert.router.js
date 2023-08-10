@@ -4,6 +4,7 @@ const advertController = require('./advert.controller');
 const advertMdlwr = require('./advert.middleware');
 const authMdlwr = require('../authorization/auth.middleware');
 
+const { BOOKING_ADVERT } = require ('../../configs/actionTokenTypes.enum');
 
 advertRouter.use('/', authMdlwr.validateTokenDynamically('accessToken'));
 
@@ -17,7 +18,11 @@ advertRouter.get('/:advertId', advertMdlwr.getAdvertDynamically('advertId','para
 advertRouter.put('/:advertId',  advertMdlwr.getAdvertDynamically('advertId','params','_id'), advertController.updateAdvert);
 advertRouter.delete('/:advertId', advertMdlwr.getAdvertDynamically('advertId','params','_id'),  advertController.deleteAdvert);
 
-advertRouter.post('/booking/:advertId', advertMdlwr.getAdvertDynamically('advertId','params','_id'), advertController.createBooking);
+advertRouter.post('/booking/:advertId', advertMdlwr.getAdvertDynamically('advertId','params','_id'), advertController.requestBooking);
+advertRouter.patch('/booking/:advertId',
+    authMdlwr.validateActionToken(BOOKING_ADVERT),
+    advertMdlwr.getAdvertDynamically('advertId', 'params', '_id'),
+    advertController.createBooking);
 advertRouter.put('/booking/:bookingId',  advertMdlwr.getBookingDynamically('bookingId','params','_id'), advertController.updateBooking);
 advertRouter.delete('/booking/:bookingId', advertMdlwr.getBookingDynamically('bookingId','params','_id'),  advertController.deleteBooking);
 

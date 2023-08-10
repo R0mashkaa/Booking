@@ -5,7 +5,7 @@ const BookingScheme = new mongoose.Schema({
     bookedFrom: { type: String, trim: true, required: true },
     bookedTo: { type: String, trim: true, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Advertisement', required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Advertisement', required: true }
 },
 {
     timestamps: true,

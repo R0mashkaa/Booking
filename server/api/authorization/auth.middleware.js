@@ -29,8 +29,12 @@ module.exports = {
 
     validateActionToken: (actionType) => async (req, res, next) => {
         try {
-            const token = req.get('Authorization');
-    
+            let token = req.query.token;
+
+            if (!token) {
+                token = req.get('Authorization');
+            }
+
             if (!token) {
                 throw new Unauthorized('No token');
             }

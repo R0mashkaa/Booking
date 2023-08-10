@@ -1,5 +1,8 @@
 module.exports = {
-    FORGOT_PASSWORD: 'Forgot password',
     CONFIRM_ACCOUNT: 'Confirm account',
-    DELETE_ACCOUNT: 'Delete account'
+    FORGOT_PASSWORD: 'Forgot password',
+    DELETE_ACCOUNT: 'Delete account',
+    BANNED_ACCOUT: 'Account banned',
+
+    BOOKING_ADVERT: 'Booking'
 };

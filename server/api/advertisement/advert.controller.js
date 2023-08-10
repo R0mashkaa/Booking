@@ -1,5 +1,6 @@
 const advertService = require('./advert.service');
 const { getByAccessToken } = require('../authorization/auth.service');
+const { sendBookingAdvertisment } = require('../authorization/auth.controller');
 const { CREATED, NO_CONTENT } = require('../../errors/error.codes');
 
 module.exports = {
@@ -76,6 +77,20 @@ module.exports = {
         }
     },
 
+    requestBooking: async (req, res, next) => {
+        try {
+            const accessToken = req.get('Authorization');
+            const { user: userId } = await getByAccessToken({ accessToken });
+            const advert = req.locals.advert;
+            
+            sendBookingAdvertisment(userId, advert.owner, advert);
+
+            res.status(200).json('Booking requested');
+        } catch (e) {
+            next(e);
+        }
+    },
+
     createBooking: async (req, res, next) => {
         try {
             const accessToken = req.get('Authorization');
@@ -88,7 +103,7 @@ module.exports = {
                 user: userId,
                 owner: advert.owner
             };
-
+            
             const createdBooking = await advertService.createBooking(booking);
 
             res.status(CREATED).json(createdBooking);

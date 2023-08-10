@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { BadRequest, Unauthorized, ServerError } = require('../errors/Apierror');
 const { ACCESS_TOKEH_SECRET, REFRESH_TOKEH_SECRET } = require ('../configs/variables');
-const { FORGOT_PASSWORD, CONFIRM_ACCOUNT, DELETE_ACCOUNT} = require('../configs/actionTokenTypes.enum');
+const { CONFIRM_ACCOUNT, FORGOT_PASSWORD, DELETE_ACCOUNT, BOOKING_ADVERT} = require('../configs/actionTokenTypes.enum');
 
 const hashPassword = (userPassword) => bcrypt.hash(userPassword, 10);
 
@@ -30,14 +30,15 @@ const generateActionToken = (actionType, encodeData = {}) => {
     let expiresIn = '24h';
     let secretWord = '';
 
-    switch(actionType){
-    case FORGOT_PASSWORD:
-        secretWord = 'Forgot password';
-        break;
-
+    switch (actionType) {
     case CONFIRM_ACCOUNT:
         expiresIn = '72h',
         secretWord = 'Confirm account';
+        break;
+        
+    case FORGOT_PASSWORD:
+        expiresIn = '24h',
+        secretWord = 'Forgot password';
         break;
     
     case DELETE_ACCOUNT:
@@ -45,6 +46,12 @@ const generateActionToken = (actionType, encodeData = {}) => {
         secretWord = 'Delete account';
         break;
 
+
+    case BOOKING_ADVERT:
+        expiresIn = '6h',
+        secretWord = 'Booking';
+        break;
+        
     default:
         throw new ServerError('Wrong actionToken type');
     }
@@ -74,6 +81,11 @@ const validateToken = (tokenType = '', tokenData = '') => {
         case 'Delete account':
             tokenType = DELETE_ACCOUNT;
             break; 
+
+        
+        case 'Booking':
+            tokenType = BOOKING_ADVERT;
+            break;
             
         default:
             throw new BadRequest('Wrong token type');
