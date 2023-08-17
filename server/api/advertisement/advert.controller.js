@@ -83,9 +83,24 @@ module.exports = {
             const { user: userId } = await getByAccessToken({ accessToken });
             const advert = req.locals.advert;
             
-            sendBookingAdvertisment(userId, advert.owner, advert);
-
-            res.status(200).json('Booking requested');
+            if (await advertService.findBookingByParams({ userId })){
+                res.status(409).json('You have another booking');
+            }
+            else {
+                if (advert.autoAccept === true) {
+                    await advertService.createBooking({
+                        advertId: advert._id,
+                        ...req.body,
+                        user: userId,
+                        owner: advert.owner
+                    });
+                    res.status(200).json('Booking accepted');
+                }
+                else {
+                    sendBookingAdvertisment(userId, advert.owner, advert);
+                    res.status(200).json('Booking requested');   
+                } 
+            }    
         } catch (e) {
             next(e);
         }
